@@ -1,0 +1,98 @@
+<style type="text/css">
+table {
+    width: 100%;
+}
+.page_header img {
+    width: 80.01mm;
+    height: 16.59mm;
+}
+.page_header td {
+    width: 50%;
+}
+.page_header td.logo {
+    text-align: right;
+}
+.page_header td {
+    vertical-align: top;
+}
+
+.page_footer {
+    text-align: center;
+}
+div.address {
+    margin-bottom: 20mm;
+}
+table.invoice {
+    border-collapse: collapse;
+}
+table.invoice td, table.invoice th {
+    border: 0.2mm solid #333;
+    vertical-align: top;
+    padding: 1mm 0mm;
+    width: 12%;
+}
+table.invoice td p, table.invoice th p {
+    padding: 0 2mm;
+}
+table.invoice .desc {
+    width: 40%;
+}
+</style>
+<page backtop="30mm">
+    <page_header class="page_header">
+        <table>
+            <tr>
+                <td>
+                    Rechnungsdatum:
+                    <?php echo $this->invoiceDate->format('d.m.Y'); ?><br />
+                    Rechnungsnummer: <?php echo $this->invoiceNumber;?><br />
+                </td>
+                <td class="logo">
+                    <img src="<?php echo __DIR__; ?>/logo.png">
+                </td>
+            </tr>
+        </table>
+    </page_header>
+    <page_footer class="page_footer">
+        S & L Programmierwerkstatt OG
+    </page_footer>
+    <div class="address">
+        Rechnungsempfänger: <?php echo $this->company;?>
+    </div>
+    <?php for ($i = 0; $i < 10; $i++): ?>
+    <table class="invoice">
+        <tr>
+            <th class="desc"><p>Beschreibung</p></th>
+            <th class="quantity"><p>Menge</p></th>
+            <th class="amount"><p>Betrag</p></th>
+            <th class="vat-rate"><p>MwSt Satz</p></th>
+            <th class="vat-amount"><p>MwSt Betrag</p></th>
+            <th class="amount-including-vat"><p>Betrag inkl. MwSt</p></th>
+        </tr>
+        <?php foreach ($this->invoiceLines as $invoiceLine) {?>
+        <tr>
+            <td class="desc"><p><?php echo $invoiceLine['name'];?></p></td>
+            <td class="quantity">
+                <p><?php echo $invoiceLine['quantity'];?></p>
+            </td>
+            <td class="amount">
+                <p><?php echo $this->currencyFormat($invoiceLine['amount'],
+                    $this->currency, "de_DE");?></p>
+            </td>
+            <td class="vat-rate">
+                <p><?php echo $invoiceLine['vatRate'];?>%</p>
+            </td>
+            <td class="vat-amount">
+                <p><?php echo $this->currencyFormat($invoiceLine['vatAmount'],
+                    $this->currency, "de_DE");?></p>
+            </td>
+            <td class="amount-including-vat">
+                <p><?php echo $this->currencyFormat(
+                    $invoiceLine['amountIncludingVat'],
+                    $this->currency, "de_DE");?></p>
+            </td>
+        </tr>
+        <?php } ?>
+    </table>
+    <?php endfor; ?>
+</page>

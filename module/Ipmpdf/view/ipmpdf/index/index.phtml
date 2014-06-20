@@ -1,0 +1,42 @@
+<?php if ($this->files): ?>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nr.</th>
+            <th>Datei-Name</th>
+            <th>Letze Änderung</th>
+            <th>PDF (für Kunden)</th>
+            <th>PDF(mit CSV-Inhalt <br />und Fehlermeldung)</th>
+            <th>Abgerechnet</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($this->files as $key => $file): ?>
+            <?php if (is_file($file)): ?>
+            <tr>
+                <td><?php echo $key?></td>
+                <td><?php echo basename($file)?></td>
+                <td><?php echo date('d.m.Y H:i:s', filemtime($file)) ?></td>
+                <td>
+                    <form action="<?php echo $this->url('ipmpdf', array('action' => 'createpdf')) ?>" method="POST" target="_new">
+                        <input type="hidden" name="filename" value="<?php echo basename($file) ?>">
+                        <input type="submit" value="PDF">                            
+                    </form>
+                </td>
+                <td>
+                    <form action="<?php echo $this->url('ipmpdf', array('action' => 'createpdf')) ?>" method="POST" target="_new">
+                        <input type="hidden" name="filename" value="<?php echo basename($file) ?>">
+                        <input type="hidden" name="extendedContent" value="1">
+                        <input type="submit" value="PDF">                            
+                    </form>
+                </td>
+                <td>
+                    <input class="pdfDone" value="<?php echo basename($file) ?>" type="checkbox" <?php echo (in_array(basename($file), $this->csvList)) ? 'checked' : ''; ?>/>
+                </td>
+              </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        </tbody>
+</table>
+<?php endif; ?>
+

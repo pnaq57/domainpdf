@@ -1,0 +1,89 @@
+<style type="text/css">
+table {
+    width: 100%;
+}
+.page_header img {
+    width: 35.00mm;
+    height: 12.00mm;
+}
+.page_header td {
+    width: 50%;
+}
+.page_header td.logo {
+    text-align: right;
+}
+.page_header td {
+    vertical-align: top;
+}
+
+.page_footer {
+    text-align: center;
+}
+div.address {
+    margin-bottom: 5mm;
+}
+table.invoice {
+    border-collapse: collapse;
+}
+table.invoice td, table.invoice th {
+    border: 0.2mm solid #848484;
+    text-align: right;
+    padding: 1mm 3mm;
+}
+table.invoice td p, table.invoice th p {
+    padding: 0 2mm;
+}
+table.invoice .desc {
+    width: 40%;
+}
+</style>
+<?php $i = 1; foreach ($this->customers->getCustomers() as $customer): ?>
+<page backtop="26mm" backbottom="30mm">    
+    <page_header class="page_header">
+        <table>
+            <tr>
+                <td>
+                    <h6>Domainsabrechnung ip&more GmbH</h6>
+                    Beleg: <?php echo $customer->getInvoiceNr() . $i;?><br /> 
+                    <h4><?php echo $customer->getName() . ' - ' . $customer->getId();?> </h4>
+                </td>
+                <td class="logo">
+                    <img src="<?php echo __DIR__; ?>/logo.png">
+                </td>
+            </tr>
+        </table>
+    </page_header>
+    <page_footer class="page_footer" >
+        <hr />
+        Weitere Information können Sie über Ihr Kundenportal einsehen.
+        <p>Alle Preise verstehen sich zuzüglich 19% MwSt. Es gelten die ABG der ip&more GmbH.</p>
+        <p>[[page_cu]]/[[page_nb]]</p>
+    </page_footer>
+    <hr/>
+    <table class="invoice">
+        <tr style="background-color: #FE9A2E;">
+            <th>Domain</th>
+            <th>Reg.-Datum</th>
+            <th>einmal. Gebühr</th>
+            <th>Jahresgebühr</th>
+            <th>Summe</th>
+        </tr>
+        <?php foreach ($customer->getDomains() as $domain): ?>
+        <tr>
+            <td><?php echo $domain->getName() ?></td>
+            <td><?php echo date('d.m.Y', $domain->getRegDate()) ?></td>
+            <td><?php echo number_format($domain->getRegPrice(), 2, ',', '') ?> €</td>
+            <td><?php echo number_format($domain->getYearlyPrice(), 2, ',', '') ?> €</td>
+            <td><?php echo number_format($domain->getTotalPrice(), 2, ',', '') ?> €</td>
+        </tr>
+        <?php endforeach; ?>
+        <tr style="background-color: #F7D358;">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Gesamt: <?php echo number_format($customer->getAllDomainPrice(), 2, ',', '')?> €</td>
+        </tr>
+    </table>
+</page>
+<?php endforeach; ?>
